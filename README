@@ -72,6 +72,13 @@ refreshtlddb([filename]):
     update this file more often than once per day.
 
 
+Dependencies
+------------
+
+This library is dependent upon the DNS Python library, which is
+available from http://www.dnspython.org/. All other libraries should be
+part of the standard Python distribution.
+
 
 Information References
 ----------------------

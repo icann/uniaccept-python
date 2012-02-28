@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 
-import tldverify
+import uniaccept
 import sys
 
 try:
@@ -15,12 +15,12 @@ except:
 #  file every time you want to do a test -- instead it should be cached
 #  locally and not redownloaded more often than once every 24 hours.
 #
-tldverify.refreshtlddb("/tmp/tld-list.txt")
+uniaccept.refreshtlddb("/tmp/tld-list.txt")
 
 #
 #  Perform query
 #
-result = tldverify.verifytldoffline(domain, "/tmp/tld-list.txt")
+result = uniaccept.verifytldoffline(domain, "/tmp/tld-list.txt")
 
 if result == True:
     print "%s contains a valid TLD" % (domain)

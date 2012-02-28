@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 
-import tldverify
+import uniaccept
 import sys
 
 try:
@@ -10,7 +10,7 @@ except:
     print "Usage: %s [domain]" % (sys.argv[0])
     sys.exit(2)
 
-result = tldverify.verifytld(domain)
+result = uniaccept.verifytld(domain)
 
 if result == True:
     print "%s contains a valid TLD" % (domain)
