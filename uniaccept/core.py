@@ -49,11 +49,14 @@ TODO:
 
 import dns.resolver
 import getopt
-import md5
 import os
 import string
 import sys
 import urllib2
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import new as md5
 
 help_message = __doc__ = """
 tldverify.py
@@ -133,13 +136,14 @@ def refreshtlddb(dbfile="/tmp/tlds-alpha-by-domain.txt"):
     try:
         tldlist = urlasstring("http://data.iana.org/TLD/tlds-alpha-by-domain.txt")
         tldmd5 = urlasstring("http://data.iana.org/TLD/tlds-alpha-by-domain.txt.md5")
-    except:
-        raise DownloadError
+    except urllib2.URLError, e:
+        raise DownloadError("Failed to fetch TLD list or checksum: %s" % e)
 
     # Verify the file was pulled correctly -- MD5 hash must match
     #
-    if tldmd5[0:32] != md5.new(tldlist).hexdigest():
-        raise DownloadError
+    digest = md5(tldlist).hexdigest()
+    if tldmd5[0:32] != digest:
+        raise DownloadError("Checksum verification failed: %s != %s" % (tldmd5[0:32], digest))
 
     # Write obtained file to disk
     #
@@ -150,8 +154,9 @@ def refreshtlddb(dbfile="/tmp/tlds-alpha-by-domain.txt"):
     # Reread and verify it was written correctly
     #
     fc = open(dbfile+".tmp", "rb").read()
-    if tldmd5[0:32] != md5.new(fc).hexdigest():
-        raise DownloadError
+    digest = md5(fc).hexdigest()
+    if tldmd5[0:32] != digest:
+        raise DownloadError("Checksum verification failed: %s != %s" % (tldmd5[0:32], digest))
 
     # Write confirmed -- move to permanent location
     #
